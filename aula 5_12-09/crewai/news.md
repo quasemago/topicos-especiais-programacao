@@ -1,0 +1,9 @@
+# **Queimadas no Mato Grosso, Brasil: Uma Crise Ambiental em Curso**
+
+O estado de Mato Grosso, no Brasil, tem sido assolado por incêndios florestais devastadores, com 24.800 focos de incêndios registrados desde janeiro deste ano, de acordo com dados do Programa BDQueimadas, Instituto Nacional de Pesquisas Espaciais. A área queimada em Mato Grosso em agosto sozinha corresponde a quatro vezes o tamanho da capital, Cuiabá, com um impressionante 1,7 milhão de hectares já destruídos pelo fogo.
+
+A situação é particularmente grave na região amazônica de Mato Grosso, onde os incêndios destruíram casas em aldeias indígenas e continuam a se espalhar descontroladamente no Parque Nacional do Xingu. O governo do Mato Grosso anunciou medidas para combater os incêndios, incluindo a antecipação da proibição de queimadas na região do Pantanal, que originalmente estava programada para começar em 1º de julho, mas foi adiada para setembro. No entanto, apesar desses esforços, o estado permanece o mais afetado por incêndios no Brasil, com 21% da área total queimada no país desde janeiro.
+
+A resposta do governo federal ao crises também tem sido criticada, com muitos chamando por ações mais decisivas para combater os incêndios e proteger o meio ambiente. A situação não se limita a Mato Grosso, pois todas as regiões do Brasil têm visto um aumento no número de focos de incêndio, com 5,65 milhões de hectares queimados em todo o país desde janeiro.
+
+O governo do Mato Grosso do Sul, no entanto, tem feito esforços para combater os incêndios, alocando 77,4 milhões de reais (US$ 15,5 milhões) para a luta contra os incêndios e a desmatamento ilegal, um aumento de 29% em relação a 2022. Além disso, o ministro do Meio Ambiente e Mudanças Climáticas, Marina Silva, e o ministro do Planejamento e Orçamento, Simone Tebet, visitarão Corumbá, no estado de Mato Grosso do Sul, para avaliar a situação e coordenar ações com os governos locais.
