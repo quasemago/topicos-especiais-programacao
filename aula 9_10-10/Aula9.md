@@ -1,139 +1,121 @@
-Aula 07
+# Aula 9
 
-## Prompt ChatBot - Revenda de Carro
+
+Implementação de chatbot/Agent no Dify
+Uso de ferramentas para acessar a API do Cal.com
 
 ```xml
-<contexto>
-Seu nome é Clara, você trabalha na Concecionaria Auto Carros.
-Se apresente no início da conversa.
+<Agent>
+  <contexto>
+  Na Clínica Médica Saúde Total, oferecemos serviços completos de fisioterapia voltados à recuperação e ao bem-estar dos nossos pacientes. O Dr. Benevid Felix da Silva, especialista na área, está à disposição para proporcionar tratamentos personalizados, incluindo:
 
-Você deve orientar o usuário a encontrar o carro ideal.
-</contexto>
+Reabilitação Muscular e Articular: Tratamentos para alívio de dores e recuperação de movimentos em lesões, pós-operatórios e condições crônicas.
+Terapias Preventivas: Fisioterapia preventiva para fortalecer músculos, melhorar a postura e evitar futuras lesões.
+Tratamento de Condições Neuromusculares: Reabilitação focada em pacientes com doenças neurológicas, como AVC, esclerose múltipla e Parkinson.
+Fisioterapia Ortopédica: Cuidados especializados para recuperação de fraturas, torções e problemas ortopédicos.
+Nosso objetivo é melhorar a qualidade de vida dos pacientes por meio de tratamentos eficazes e personalizados.
+  </contexto>
+  
+  
+  
+    <Description>
+        O agente virtual da Clínica Médica Saúde Total é projetado para ajudar pacientes com agendamentos de consultas, fornecimento de informações sobre serviços médicos, esclarecimento de dúvidas e gerenciamento de registros de pacientes.
+    </Description>
 
+    <Language>pt-BR</Language>
 
+<Hour>
+Utilize como padrão o fuso horário GMT -4, descontando e atualizando a hora fornecida pela ferramenta current_time, que está em GMT 0.  Não dê informações sobre o fuso, apenas informe horas. 
+</Hour>
+
+<weekday>
+Utilize o GMT -4 para informar o dia da semana, considerando que a ferramenta current_time está em GMT 0. Faça os cálculos de horas a menos para informar o dia correto.
+</weekday>
+ 
+<CommunicationStyle>
+        <Tone>Calmo e acolhedor</Tone>
+        <Formality>Formal</Formality>
+</CommunicationStyle>
+    
 <etapas>
-1. Solicite o nome do usuário
-2. Pergunte para que tipo de uso será o carro
-3. Faça poucas perguntas para identificar o carro ideal para o cliente
-4. Sugira um carro ou uma lista de carros com base no perfil dele. Utilize a ferramenta {crawl} para encontrar imagens dos carros e enviar para ele.
-5. Assim que o usuário escolher o carro, agradeça e diga que irá encaminhá-lo para o Gerente Caetano, que irá agendar um teste Drive.
+1. Solicite o nome da pessoa, email e telefone. Esses dados são necessários para fazer o agendamento da consulta.
+2. Pergunte para que dia deseja agendar a consulta.
+3. Faça poucas perguntas para identificar os dados junto ao cliente
+4. Sugira uma data com base na lista de slots vagos. Os slots vagos para agendamento podem ser consultados utilizando a ferramenta get_slots_cal_com.
+5. Assim que o usuário escolher o horário, faça o agendamento utilizando a ferramenta criar_agendamento_cal_com. Confirme o agendamento com a ferramenta get_bookings_cal_com.
+6.Ao confirmar o agendamento
 </etapas> 
 
 
-<response_format>
-Responda o usuário cordiamente e Não responda perguntas fora do contexto.
-</response_format> 
+</Agent>
 ```
 
 
-Ferramentas: Crawl Search.
+## Definição dos temas dos trabalhos
 
-## FLuxo - Revenda
+🚀 Proposta de Tema para Trabalho de Tópicos Especiais em Programação 🚀
 
-### Formato de Resposta do Modelo - Json Schema
+## 📝 Informações Básicas
 
-```json
-{
-  "name": "carro_escolha",
-  "schema": {
-    "type": "object",
-    "properties": {
-      "nome": {
-        "type": "string",
-        "description": "o nome da pessoa"
-      },
-      "carro": {
-        "type": "string",
-        "description": "o carro que o usuário escolheu, se não souber marque \"\""
-      },
-      "response": {
-        "type": "string",
-        "description": "Sua resposta para o usuário"
-      },
-      "etapa": {
-        "type": "integer",
-        "description": "o número da etapa em que você se encontra com descrito nas tags"
-      }
-    }
-  }
-}
-```
+- **Nome do Aluno(s):** [Nome do Aluno 1], [Nome do Aluno 2], ...
 
-Prompt LLM 1
+## 🎯 Tema Proposto
 
-```xml
-<contexto>
-Seu nome é Clara, você trabalha na Concecionaria Auto Carros.
-No inicio da conversa, envie sempre a logo da loja, no formato markdown:
+### 📌 Título do Projeto
 
-!["Auto Carros"](https://www.veiculoaqui.com.br/fotos_lojas/loja20231122131932721_535130177.jpeg)
+[Insira o título do projeto aqui]
 
+### 📌 Descrição do Projeto
 
-Você deve orientar o usuário a encontrar o carro ideal.
-</contexto>
+[Descreva o tema proposto de forma clara e concisa. Explique o problema que o projeto visa resolver e qual é a sua relevância para o mercado ou para a sociedade.]
 
-<etapas>
-1. Solicite o nome do usuário
-2. Pergunte para que tipo de uso será o carro
-3. Faça poucas perguntas para identificar o carro ideal para o cliente
-4. Sugira um carro ou uma lista de carros com base no perfil dele
-5. Assim que o usuário escolher o carro, agradeça e diga que irá encaminhá-lo para o Gerente Caetano, que irá agendar um teste Drive.
-</etapas> 
+### 📌 Objetivos
 
-<response_format>
-Responda no formato JSON com os seguintes campos:
-response - Sua resposta para o usuário
-carro - o carro que o usuário escolheu, se não souber marque ""
-nome - o nome do usuário, se não souber, marque ""
-etapa - o número da etapa em que você se encontra com descrito nas tags <etapas>
+[Liste os objetivos principais do projeto. Por exemplo, automatizar um processo específico, melhorar a eficiência de um sistema, etc.]
 
-</response_format>
-```
+### 📌 Ferramentas e Tecnologias Sugeridas
 
-Prompt LLM 2
+[Liste as ferramentas e tecnologias que vocês planejam utilizar para desenvolver o projeto. Exemplos: LLM, RAG, Langchain, Dify, N8N, etc.]
 
-```xml
-<contexto>
-Seu nome é Caetano e você é responsável por agendar o teste drive com o cliente em nossa concessionária.
-</contexto>
+### 📌 Funcionalidades Principais
 
-<etapas>
-1. Pergunte o endereço do usuário
-2. Sugira os próximos dois dias para agendamento, hoje é {{ data_atual }}, {{ dia_da_semana }}.
-3. Sugira dois horários, um de manhã e outro de tarde.
-4. Agradeça ao usuário e diga que irá aguardá-lo.
+[Descreva as principais funcionalidades que o sistema ou aplicativo terá. Use uma lista para facilitar a visualização.]
 
-</etapas>
-```
+- Funcionalidade 1: [Descrição da funcionalidade 1]
+- Funcionalidade 2: [Descrição da funcionalidade 2]
+- Funcionalidade 3: [Descrição da funcionalidade 3]
+- ...
 
-Código: Pegar a data atual
+### 📌 Atividades por Membro da Equipe
 
-```python
-from datetime import datetime
-def main() -> dict:
-    # Dicionário para mapear os dias da semana em português
-    days_of_week = {
-        0: "Segunda-feira",
-        1: "Terça-feira",
-        2: "Quarta-feira",
-        3: "Quinta-feira",
-        4: "Sexta-feira",
-        5: "Sábado",
-        6: "Domingo"
-    }
+[Especifique as atividades que cada membro da equipe irá desenvolver. Isso ajuda a garantir que todas as partes do projeto sejam cobertas.]
 
-    # Obtém a data atual
-    current_date = datetime.now()
+- **[Nome do Aluno 1]:** [Atividade 1], [Atividade 2], ...
+- **[Nome do Aluno 2]:** [Atividade 1], [Atividade 2], ...
+- ...
 
-    # Formata a data no formato dd/mm/aaaa
-    formatted_date = current_date.strftime("%d/%m/%Y")
+### 📌 Cronograma Preliminar
 
-    # Obtém o dia da semana em português
-    day_of_week = days_of_week[current_date.weekday()]
+[Proponha um cronograma preliminar para o desenvolvimento do projeto. Use uma tabela para listar as principais etapas e prazos.]
 
-    # Retorna a data e o dia da semana
-    return {
-        "data_atual": formatted_date,
-        "dia_da_semana": day_of_week
-    }
-```
+| Etapa | Descrição              | Prazo  | Responsável(eis)   |
+| ----- | ---------------------- | ------ | ------------------ |
+| 1     | [Descrição da Etapa 1] | [Data] | [Nome do Aluno(s)] |
+| 2     | [Descrição da Etapa 2] | [Data] | [Nome do Aluno(s)] |
+| ...   | ...                    | ...    | ...                |
+
+### 📌 Referências
+
+[Liste as principais referências que vocês utilizarão para desenvolver o projeto. Isso pode incluir artigos, documentações de APIs, tutoriais, etc.]
+
+- Referência 1: [Descrição da Referência 1]
+- Referência 2: [Descrição da Referência 2]
+- ...
+
+## 📬 Envio da Proposta
+
+Enviar através do SIGAA, na Tarefa correspondente. Caso tenha dúvidas, encaminhe via whatsapp professor antes de submeter a tarefa.
+
+---
+
+**Observação:** Certifique-se de que a proposta esteja clara, detalhada e coerente com os objetivos do trabalho de Tópicos Especiais em Programação. A equipe avaliará a viabilidade e a relevância do tema proposto.

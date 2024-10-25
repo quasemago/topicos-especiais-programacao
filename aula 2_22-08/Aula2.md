@@ -7,13 +7,14 @@ Tools.
 Exemplos: **Search Tools** **GPTs**
 
 VPS, Docker, Domínio e DNS (Cloudflare)?
+
 1. VPS, domínios (Registrar dominio)
 2. Criar conta na cloudflare e registrar domínio
 
-
+```bash
 username:tep
 senha:tep123
-
+```
 
 ## Docker
 
@@ -47,9 +48,7 @@ Tem um grande desempenho e consome menos recursos quando comparado ao Docker Too
 - Uso de memória inicial sem rodar nenhum container Docker é de 1GB ou mais.
 - Pode ser necessário reiniciar o Docker Desktop para que ele funcione corretamente em algumas situações.
 - Tende a consumir mais recursos da máquina que o Docker Engine diretamente instalado no WSL 2.
-- 
-### Docker Engine (Docker Nativo) diretamente instalado no WSL2
-
+- ### Docker Engine (Docker Nativo) diretamente instalado no WSL2
 
 O Docker Engine é o Docker nativo (como foi criado) que roda no ambiente Linux e completamente suportado para WSL 2. Sua instalação é idêntica a descrita para as próprias distribuições Linux disponibilizadas no site do [Docker](https://docs.docker.com/engine/install/ubuntu/).
 
@@ -58,13 +57,14 @@ O Docker Engine é o Docker nativo (como foi criado) que roda no ambiente Linux 
 #### Algumas Vantagens
 
 - Consume menos memória para rodar o Docker Daemon (servidor do Docker) quando comparado ao Docker Desktop.
+
 - Traz a experiência mais pura de usar o Docker no Linux.
-#### Algumas Desvantagens
+  
+  #### Algumas Desvantagens
 
 - Se necessitar executar o Docker em outra instância do WSL 2, é necessário instalar novamente o Docker nesta instância ou configurar o acesso ao socket do Docker desejado para compartilhar o Docker entre as instâncias.
 
 ### 2 - Instalar o Docker com Docker Engine (Docker Nativo)
-
 
 A instalação do Docker no WSL 2 é idêntica a instalação do Docker em sua própria distribuição Linux, portanto se você tem o Ubuntu é igual ao Ubuntu, se é Fedora é igual ao Fedora. A documentação de instalação do Docker no Linux por distribuição está [aqui](https://docs.docker.com/engine/install/), mas vamos ver como instalar no Ubuntu.
 
@@ -124,37 +124,37 @@ https://docs.docker.com/engine/install/ubuntu/
 Before you install Docker Engine for the first time on a new host machine, you need to set up the Docker repository. Afterward, you can install and update Docker from the repository.
 
 1. Set up Docker's `apt` repository.
-    
-    ```bash
-    # Add Docker's official GPG key:
-    sudo apt-get update
-    sudo apt-get install ca-certificates curl
-    sudo install -m 0755 -d /etc/apt/keyrings
-    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-    sudo chmod a+r /etc/apt/keyrings/docker.asc
-    
-    # Add the repository to Apt sources:
-    echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt-get update
-    ```
-    
-1. Install the Docker packages.
-    
+   
+   ```bash
+   # Add Docker's official GPG key:
+   sudo apt-get update
+   sudo apt-get install ca-certificates curl
+   sudo install -m 0755 -d /etc/apt/keyrings
+   sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+   sudo chmod a+r /etc/apt/keyrings/docker.asc
+   
+   # Add the repository to Apt sources:
+   echo \
+     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+     $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   sudo apt-get update
+   ```
+
+2. Install the Docker packages.
+   
     Latest Specific version  
     To install the latest version, run:
-    
-    ```console
-    $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    ```
-    
-2. Verify that the Docker Engine installation is successful by running the `hello-world` image.
-    
-    ```console
-    $ sudo docker run hello-world
-    ```
+   
+   ```console
+   $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   ```
+
+3. Verify that the Docker Engine installation is successful by running the `hello-world` image.
+   
+   ```console
+   $ sudo docker run hello-world
+   ```
 
 **Fazer Ate aqui**
 
@@ -162,8 +162,6 @@ Before you install Docker Engine for the first time on a new host machine, you n
 https://github.com/codeedu/wsl2-docker-quickstart
 https://learn.microsoft.com/pt-br/windows/terminal/install
 ```
-
-
 
 ### Como Containerizar uma Aplicação Node.js ?
 
@@ -188,7 +186,6 @@ apt install nodejs
 apt install npm
 ```
 
-
 #### Passo 2: Teste a aplicação sem o Docker (opcional)
 
 Antes de prosseguir com a containerização, é uma boa prática testar a aplicação localmente sem o Docker. Para fazer isso, siga estas etapas:
@@ -198,14 +195,12 @@ Antes de prosseguir com a containerização, é uma boa prática testar a aplica
 
 ```
 $ npm install
-
 ```
 
 - Quando as dependências terminarem de instalar, execute o seguinte comando para iniciar a aplicação:
 
 ```
 $ node src/index.js
-
 ```
 
 - Abra um navegador e acesse a aplicação em [http://localhost:3000](http://localhost:3000/). Você deverá ver uma aplicação de lista de tarefas simples.
@@ -215,8 +210,8 @@ $ node src/index.js
 
 Agora que você tem uma aplicação, podemos iniciar o processo de containerização. Dentro do diretório 'docker-nodejs-sample', execute o comando 'docker init' em um terminal e siga as instruções:
 
-
 ### Crie um Dockerfile
+
 Crie um arquivo chamado `Dockerfile` na pasta principal do seu projeto. Este arquivo irá conter as instruções para construir a imagem Docker do seu projeto.
 
 ```bash
@@ -244,7 +239,6 @@ CMD ["node", "src/index.js"]
 
 ### **Crie um arquivo `.dockerignore`**
 
-
 ```bash
 node_modules
 npm-debug.log
@@ -261,7 +255,8 @@ docker images
 docker build -t meu-app-node .
 ```
 
-### **Execute o Container**:  
+### **Execute o Container**:
+
 Após a construção da imagem, você pode executar um container a partir dela com o seguinte comando:
 
 ```bash
@@ -302,7 +297,6 @@ services:
       - NODE_ENV=production
 ```
 
-
 **Construa e Execute os Serviços**:  
 No terminal, navegue até a pasta principal do seu projeto e execute o seguinte comando para construir e iniciar os serviços definidos no `docker-compose.yml`:
 
@@ -313,16 +307,14 @@ docker compose up --build
 **Verifique os Serviços**:
 
 ```bash
-
 docker compose ps
 #parar serviço
 docker compose down
 ```
 
 - Use `docker-compose up -d` quando quiser iniciar os serviços usando as imagens já construídas, sem reconstruir as imagens.
-    
-- Use `docker-compose up --build -d` quando quiser garantir que as imagens sejam reconstruídas antes de iniciar os serviços, o que é útil após fazer alterações no código-fonte ou no Dockerfile.
 
+- Use `docker-compose up --build -d` quando quiser garantir que as imagens sejam reconstruídas antes de iniciar os serviços, o que é útil após fazer alterações no código-fonte ou no Dockerfile.
 
 ### Exemplo de um arquivo com dois serviços
 
@@ -353,12 +345,13 @@ services:
 As variáveis de ambiente correspondem às necessidades do MySQL:
 
 - `MYSQL_ROOT_PASSWORD`: Define a senha do usuário root.
-    
+
 - `MYSQL_DATABASE`: Define o nome do banco de dados que será criado.
-    
+
 - `MYSQL_USER`: Define o nome de um usuário não-root que será criado.
-    
+
 - `MYSQL_PASSWORD`: Define a senha para o usuário não-root.
 
 #### Referência:
+
 https://blog.rocketseat.com.br/containerizando-uma-aplicacao-node-js-com-docker-um-guia-passo-a-passo/

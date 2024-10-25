@@ -3,12 +3,16 @@
 Prof. Dr. Benevid Felix da Silva
 
 Material elaborado com base nas referências citadas abaixo. 
+
 > Favor não compartilhar fora do contexto da disciplina.
+
 ---
+
 ## **O que é Engenharia de Prompt**
 
 A Engenharia de Prompts é uma disciplina emergente que se dedica a criar e otimizar instruções textuais, ou "prompts", que direcionam o comportamento dos LLMs para produzir respostas precisas e úteis. Este campo é essencial para maximizar a eficiência e a precisão dos modelos de linguagem, pois determina como esses modelos interpretam e respondem às solicitações dos usuários.
 ---
+
 - Formulação de entradas que orientam o comportamento dos modelos de linguagem.
 
 - A criação de prompts eficazes é um processo interativo que inclui planejamento, testes e refinamentos contínuos.
@@ -24,12 +28,15 @@ A Engenharia de Prompts é uma disciplina emergente que se dedica a criar e otim
 Técnicas Básicas de Engenharia de Prompt
 
 ---
+
 ### Configurações da LLM
 
 - Temperatura - quanto menor a `temperatura`, mais determinísticos são os resultados
 - Tokens - cerca de 4 caracteres (english)
 - TopP - Se você está procurando respostas exatas e factuais, mantenha isso baixo
+
 ---
+
 ## Prompts Básicos
 
 ```d
@@ -42,11 +49,14 @@ Melhorando o contexto:
 Complete a sentença:
 O céu é
 ```
+
 ---
+
 Isto é melhor? Bem, dissemos ao modelo para completar a frase para que o resultado fique muito melhor, pois segue exatamente o que dissemos para fazer ("complete a frase"). Essa abordagem de projetar prompts ideais para instruir o modelo a executar uma tarefa é chamada de **engenharia de prompt**.
 
 O Exemplo de prompt acima corresponde apenas a uma pergunta direta, em que você está solicitando diretamente ao modelo uma resposta sem nenhum exemplo ou demonstração sobre a tarefa que deseja realizar. Este modelo é conhecido como **Zero-shot Prompting**.
 ---
+
 Outra técnica popular é a *Few-shot Prompting* onde fornecemos exemplos (ou seja, demonstrações). Os prompts de poucos tiros podem ser formatados da seguinte maneira:
 
 ```d
@@ -58,7 +68,9 @@ Outra técnica popular é a *Few-shot Prompting* onde fornecemos exemplos (ou se
 <Resposta>
 <Pergunta>?
 ```
+
 ---
+
 Lembre-se de que não é necessário usar o formato QA. O formato do prompt depende da tarefa em mãos. 
 
 Exemplo:
@@ -73,7 +85,9 @@ Isto é mau! // Negativo
 Uau, esse filme foi radical! // Positivo
 Que espetáculo horrível! //
 ```
+
 ---
+
 ### Elementos de um prompt
 
 Um prompt pode conter qualquer um dos seguintes componentes:
@@ -104,6 +118,7 @@ Prompt:
 Traduza o texto abaixo para o espanhol:
 Texto: "olá!"
 ```
+
 ---
 
 Especificidade
@@ -155,6 +170,7 @@ Prompt:
 ```d
 Use 2 a 3 frases para explicar o conceito de engenharia de prompt a um aluno do ensino médio.
 ```
+
 ---
 
 Fazer ou não fazer?
@@ -169,6 +185,7 @@ O agente a seguir recomenda filmes para um cliente. NÃO PEÇA INTERESSES. NÃO 
 Cliente: Por favor, recomende um filme baseado nos meus interesses.
 Agente:
 ```
+
 ---
 
 Aqui está um prompt melhor:
@@ -188,7 +205,6 @@ Agente:
 ### Resumo de texto
 
 Uma das tarefas padrão na geração de linguagem natural é o resumo de texto.
-
 
 Digamos que estou interessado em aprender sobre antibióticos, poderia tentar um prompt como este:
 
@@ -214,6 +230,7 @@ A: <resposta anterior>
 Q: **Explique em uma frase.**
 A:
 ```
+
 ---
 
 ### Extração de Informações
@@ -240,6 +257,7 @@ Contexto: Teplizumab tem suas raízes em uma empresa farmacêutica de Nova Jerse
 Pergunta: De onde veio originalmente o OKT3?
 Responder:
 ```
+
 ---
 
 ### Classificação de texto
@@ -384,19 +402,22 @@ Resolva dividindo o problema em etapas. Primeiro, identifique os números ímpar
 ## Principais Técnicas
 
 ### Zero-shot & Few-shot Prompting
+
 O conceito de zero-shot prompting refere-se à capacidade de um modelo de linguagem de entender e executar uma tarefa sem ter recebido exemplos específicos dessa tarefa anteriormente.
+
 > A palavra "shot" nesse contexto se refere a "exemplo", e "prompting" seria a "criação de prompts".
 
 ---
 
 ### Chain-of-Thought Prompting
+
 O conceito de Chain-of-Thought Prompting pode ser traduzido como "Criação de prompts com Cadeia de Pensamento".
 
 ---
 
 Prompt
-```json
 
+```json
 P: Um paciente chega ao hospital com sintomas de febre, tosse e dificuldade para respirar. Primeiro, o médico realiza um exame físico. Em seguida, solicita exames de sangue e uma radiografia do tórax. Após analisar os resultados, o médico diagnostica pneumonia. Explique a sequência de passos que o médico seguiu para diagnosticar a pneumonia.
 
 R: O médico realizou um exame físico para avaliar os sintomas. Depois, solicitou exames de sangue e uma radiografia do tórax para obter mais informações. Com os resultados, diagnosticou pneumonia. A sequência de passos é: exame físico, exames de sangue, radiografia do tórax, diagnóstico de pneumonia. (CoT aplicado)
@@ -432,8 +453,8 @@ Essa estratégia simples também proposta pela equipe do Google consiste em usar
 
 Na Chain-of-Verification, após o modelo gerar uma resposta inicial a um prompt, são formuladas perguntas de seguimento para ajudar a verificar a veracidade e a precisão da resposta inicial.
 Prompt
-```json
 
+```json
 Por favor, responda inicialmente de forma concisa à minha pergunta. Em seguida, faça perguntas sobre a resposta inicial e verifique os fatos apresentados nessas respostas. Exponha as perguntas e respostas do processo de verificação detalhadamente e, com base nessa análise, reformule uma resposta final mais precisa e fundamentada para a minha <pergunta> (CoVE aplicado)
 
 <pergunta> Quando o Ayrton Senna morreu? <pergunta>
@@ -448,12 +469,14 @@ Pesquisadores de Meta IA introduziram um método chamado Geração com Recupera�
 ---
 
 ### React - Razão e Ação
+
 Yao et al., 2022 introduziu uma estrutura em que LLMs são usados para gerar rastros de raciocínio e ações específicas de tarefas de maneira intercalada. A geração de rastros de raciocínio permite que o modelo induza, rastreie e atualize planos de ação e até mesmo trate de exceções. 
+
 > A etapa de ação permite interagir e coletar informações de fontes externas, como bases de conhecimento ou ambientes
 
 ---
 
-## Engenharia de Prompt 
+## Engenharia de Prompt
 
 Bruno Picinini e Sandeco
 
@@ -466,7 +489,9 @@ Bruno Picinini e Sandeco
 ```json
 PROMPT: Você agora é um profissional da educação na área da computação para crianças e adolescentes, tem a missão de ensinar conceitos de ciência da computação e habilidades de programação de maneira acessível e envolvente. Sua habilidade em transformar tópicos complexos em conteúdos lúdicos e práticos incentiva a criatividade e a resolução de problemas nos jovens. Com seu conhecimento técnico em linguagens de programação e tecnologias emergentes, você está sempre atento às necessidades e interesses dos alunos, criando um ambiente inclusivo e motivador que promove o pensamento crítico e a inovação. Sua capacidade de adaptar o conteúdo para diferentes faixas etárias e níveis de habilidade garante que todos os estudantes possam avançar de forma significativa e divertida no mundo digital.
 ```
+
 ---
+
 > Uso de delimitadores
 
 ```xml
@@ -481,7 +506,9 @@ A viagem ao espaço representa um dos maiores avanços da humanidade, permitin
 
 ração de fronteiras além da Terra. </texto2>
 ```
+
 ---
+
 > Forneça Exemplos
 
 ```json
@@ -499,12 +526,13 @@ Gerente de Projetos
 </exemplo>  
 Agora, escreva o e-mail
 ```
+
 ---
+
 Considerar os seguintes pontos em prompts mais complexos:
 
-
 > Objetivo - o que espera alcançar
- 
+
 > Modelo - formato do resultado
 
 > Contexto - descrever o estado atual (problema)
@@ -514,7 +542,7 @@ Considerar os seguintes pontos em prompts mais complexos:
 ---
 
 > Além de incluir, quando couber, controle de:
-> 
+
 - Nível de complexidade do texto: Definir escala 
 - Entonação  - definir níveis
 - Controle de sentimento - definir escalas
@@ -522,6 +550,7 @@ Considerar os seguintes pontos em prompts mais complexos:
 - Controle de foco no assunto. Definir escala. Ex. Escala de Foco: 1 o foco é amplo e 10 o foco é muito restrito
 - Nível de detalhe - criar escala
 - etc
+
 ---
 
 ### Processo para desenvolver PROMPTs mais completos
@@ -544,16 +573,19 @@ Veja o arquivo: obsidian://open?vault=TEP&file=Modelo%20de%20Agente%20com%20XML.
 ## Dicas
 
 Verificar o tamanho máximo do prompt. 
+
 > Tamanho do Prompt: 18k Caracteres (GPT)
 
 Transformar a base de conhecimento em arquivos .json
 Utilizar Recompensas e Punições
 Estruturação de documentos longos. 
+
 - Posicione antes das instruções.
 
 ---
 
 ### Aprenda ou Revise:
+
 - Markdown {{PDF}}
 - JSON - https://quickref.me/json.html
 
@@ -566,11 +598,13 @@ Para consolidar os conceitos apresentados, aqui estão alguns exercícios pra�
 Para cada exercício anote o prompt inicial e a resposta obtida, o prompt final (que lhe agradou) e a resposta obtida. Segue modelo
 
 Prompt:
+
 ```d
 O Céu é
 ```
 
 Saída:
+
 ```d
 Azul
 ```
