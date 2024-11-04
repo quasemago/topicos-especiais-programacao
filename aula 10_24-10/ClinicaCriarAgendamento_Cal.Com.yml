@@ -1,0 +1,180 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: ClinicaCriarAgendamento_Cal.Com
+  use_icon_as_answer_icon: false
+kind: app
+version: 0.1.2
+workflow:
+  conversation_variables: []
+  environment_variables:
+  - description: ''
+    id: f98551a3-e340-4bd2-a2e8-eebeb44d1a6c
+    name: eventTypeId
+    value: '1328074'
+    value_type: string
+  - description: ''
+    id: b415706d-1c58-4bc0-abe3-17cd168197f7
+    name: API_CAL_KEY
+    value: cal_live_c2ad5dc9960e06ceb2c9ce039ef1f97f
+    value_type: string
+  features:
+    file_upload:
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+    opening_statement: ''
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: http-request
+      id: 1729814036290-source-1729814180557-target
+      source: '1729814036290'
+      sourceHandle: source
+      target: '1729814180557'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: http-request
+        targetType: end
+      id: 1729814180557-source-1729814912604-target
+      source: '1729814180557'
+      sourceHandle: source
+      target: '1729814912604'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Iniciar
+        type: start
+        variables:
+        - label: Nome completo
+          max_length: 48
+          options: []
+          required: true
+          type: text-input
+          variable: nome
+        - label: dataSlot
+          max_length: 48
+          options: []
+          required: true
+          type: text-input
+          variable: dataSlot
+        - label: email
+          max_length: 48
+          options: []
+          required: true
+          type: text-input
+          variable: email
+        - label: telefone (XX) XXXXX-XXXX
+          max_length: 48
+          options: []
+          required: true
+          type: text-input
+          variable: telefone
+      height: 167
+      id: '1729814036290'
+      position:
+        x: -476.3679035888604
+        y: 281.42952445308225
+      positionAbsolute:
+        x: -476.3679035888604
+        y: 281.42952445308225
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: "{\n  \"start\": \"{{#1729814036290.dataSlot#}}\",\n  \"eventTypeId\"\
+            : {{#env.eventTypeId#}},\n  \"attendee\": {\n    \"name\": \"{{#1729814036290.nome#}}\"\
+            ,\n    \"email\": \"{{#1729814036290.email#}}\",\n    \"timeZone\": \"\
+            America/Cuiaba\",\n    \"language\": \"pt-BR\"\n  },\n  \"guests\": [],\n\
+            \  \"meetingUrl\":\"http://unemat.br\",\n  \"location\": \"http://unemat.br\"\
+            ,\n\"bookingFieldsResponses\": {\n    \"customField\": \"{{#1729814036290.telefone#}}\"\
+            \n }\n}"
+          type: json
+        desc: ''
+        headers: 'Authorization:Bearer {{#env.API_CAL_KEY#}}
+
+          cal-api-version:2024-08-13'
+        method: post
+        params: ''
+        selected: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: Requisição HTTP
+        type: http-request
+        url: https://api.cal.com/v2/bookings
+        variables: []
+      height: 105
+      id: '1729814180557'
+      position:
+        x: -87.82152505499869
+        y: 281.42952445308225
+      positionAbsolute:
+        x: -87.82152505499869
+        y: 281.42952445308225
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1729814180557'
+          - body
+          variable: result
+        selected: false
+        title: Fim
+        type: end
+      height: 89
+      id: '1729814912604'
+      position:
+        x: 336.5948560838853
+        y: 353.88112529379595
+      positionAbsolute:
+        x: 336.5948560838853
+        y: 353.88112529379595
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    viewport:
+      x: 539.7968488502759
+      y: -85.23351897513982
+      zoom: 0.975141310441678

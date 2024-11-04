@@ -11,15 +11,15 @@ workflow:
   conversation_variables: []
   environment_variables:
   - description: ''
-    id: a777b4ea-4962-4d38-8f3d-977536f9c8de
-    name: eventTypeId
-    value: '1259438'
+    id: 4f7ae4b6-3685-4d99-8d5a-d5cf21f4070e
+    name: API_CAL_KEY
+    value: cal_live_c2ad5dc9960e06ceb2c9ce039ef1f97f
     value_type: string
   - description: ''
-    id: 8cd35818-b50f-4d32-8707-6b1d12ed6eb4
-    name: apical
-    value: ''
-    value_type: secret
+    id: a777b4ea-4962-4d38-8f3d-977536f9c8de
+    name: eventTypeId
+    value: '1328074'
+    value_type: string
   features:
     file_upload:
       image:
@@ -30,7 +30,7 @@ workflow:
         - remote_url
     opening_statement: ''
     retriever_resource:
-      enabled: true
+      enabled: false
     sensitive_word_avoidance:
       enabled: false
     speech_to_text:
@@ -96,7 +96,7 @@ workflow:
           required: true
           type: text-input
           variable: dataFim
-      height: 116
+      height: 115
       id: '1728608583946'
       position:
         x: 15
@@ -108,7 +108,7 @@ workflow:
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 244
+      width: 243
     - data:
         authorization:
           config: null
@@ -117,7 +117,7 @@ workflow:
           data: ''
           type: none
         desc: ''
-        headers: Authorization:Bearer {{#env.apical#}}
+        headers: Authorization:Bearer {{#env.API_CAL_KEY#}}
         method: get
         params: 'eventTypeId:{{#env.eventTypeId#}}
 
@@ -133,7 +133,7 @@ workflow:
         type: http-request
         url: https://api.cal.com/v2/slots/available
         variables: []
-      height: 110
+      height: 105
       id: '1728608756631'
       position:
         x: 383
@@ -141,11 +141,11 @@ workflow:
       positionAbsolute:
         x: 383
         y: 135
-      selected: false
+      selected: true
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 244
+      width: 243
     - data:
         desc: ''
         outputs:
@@ -156,7 +156,7 @@ workflow:
         selected: false
         title: Fim
         type: end
-      height: 90
+      height: 89
       id: '1728609560256'
       position:
         x: 1053
@@ -164,11 +164,11 @@ workflow:
       positionAbsolute:
         x: 1053
         y: 171
-      selected: true
+      selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 244
+      width: 243
     - data:
         code: "def main(httpResponse):\n    body = json.loads(httpResponse)\n    slots\
           \ = body['data']['slots']\n    return {\n        \"result\": slots\n   \
@@ -187,7 +187,7 @@ workflow:
           - '1728608756631'
           - body
           variable: httpResponse
-      height: 54
+      height: 53
       id: '1728609869086'
       position:
         x: 730.5
@@ -199,8 +199,8 @@ workflow:
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 244
+      width: 243
     viewport:
-      x: 112.53455598809245
-      y: -168.93876446642628
-      zoom: 1.5200640133112406
+      x: -267.65801237982987
+      y: 122.18663118956721
+      zoom: 1.0060945188419155

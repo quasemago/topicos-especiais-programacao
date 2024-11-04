@@ -1,0 +1,48 @@
+services:
+  api:
+    image: atendai/evolution-api:latest # verify the latest version at https://hub.docker.com/r/atendai/evolution-api
+    restart: always
+    ports:
+      - 8090:8090
+    volumes:
+      - evolution_instances:/evolution/instances
+    networks:
+      - evolution-net
+    env_file:
+      - .env
+    expose:
+      - 8090
+  
+  postgres-evo:
+    image: postgres:15
+    networks:
+      - evolution-net
+    command: ["postgres", "-p", "5433", "-c", "max_connections=1000"]
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=dbadmin123456 # change this password to production on the .env database configuration
+    volumes:
+      - evolution_postgres:/var/lib/postgresql/data
+    expose:
+      - 5433
+
+  redis:
+    image: redis:latest
+    networks:
+      - evolution-net
+    command: >
+      redis-server --port 6379 --appendonly yes
+    volumes:
+      - evolution_redis:/data
+    expose:
+      - 6379
+
+volumes:
+  evolution_instances:
+  evolution_redis:
+  evolution_postgres:
+
+networks:
+  evolution-net:
+    name: evolution-net
+    driver: bridge
