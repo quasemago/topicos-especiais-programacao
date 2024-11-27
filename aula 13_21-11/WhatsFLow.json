@@ -1,0 +1,864 @@
+{
+  "name": "WhatsFLow",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "07d7d4ca-a764-46a3-99bd-12bde2cbeda4",
+              "name": "telefonecliente",
+              "value": "={{ $json.body.data.key.remoteJid.split(\"@\")[0]}}",
+              "type": "string"
+            },
+            {
+              "id": "8029fd48-45f0-45e1-bdbb-4b5e5c15e6ba",
+              "name": "telefoneempresa",
+              "value": "={{ $json.body.sender.split(\"@\")[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "8887afeb-e789-4d2c-bd48-f996e976ba91",
+              "name": "mensagem",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "9e5180c6-5700-4ec0-91f5-57b0e7f2c13a",
+              "name": "nome_cliente",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2c722498-485e-4b7b-a4e0-2b495256d6bd",
+      "name": "Campos iniciais",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        -1620,
+        1260
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://dify.semcodigo.edu.pl/v1/chat-messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer  {{ $('Supabase - GetEmpresa').item.json.chaveDify }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $('Campos iniciais').item.json.mensagem }}"
+            },
+            {
+              "name": "response_mode",
+              "value": "streaming"
+            },
+            {
+              "name": "conversation_id",
+              "value": "={{ $('Supabase-GetCliente').item.json.conversa_id_dify }}"
+            },
+            {
+              "name": "user",
+              "value": "={{ $('Campos iniciais').item.json.telefonecliente }}"
+            },
+            {
+              "name": "inputs"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a6ad44c2-98ef-48cf-b1ab-3ee8bd2402e7",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -20,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a44c52c-21ec-4b68-8e93-c56fe65b29d2",
+              "name": "resposta",
+              "value": "={{ $json.thoughtEvents[0].thought }}",
+              "type": "string"
+            },
+            {
+              "id": "316960e4-fdb0-4150-a66a-e1c84f15d5ed",
+              "name": "conversa_id",
+              "value": "={{ $('Webhook').item.json.body.data.key.remoteJid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4211052c-91b1-4a1c-87ce-345d87a61abe",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        420,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "ia_empresas",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telefone",
+              "keyValue": "={{ $json.telefoneempresa }}"
+            }
+          ]
+        }
+      },
+      "id": "5417f21e-f9ca-4389-bba5-0d9e11612ba6",
+      "name": "Supabase - GetEmpresa",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        1120
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TsWokcJaiFC3LhOR",
+          "name": "Supabase-SASRIFA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "ia_clientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telefone_cliente",
+              "keyValue": "={{ $('Campos iniciais').item.json.telefonecliente }}"
+            }
+          ]
+        }
+      },
+      "id": "06e875e1-38dd-47d5-8d50-dc79bda02d29",
+      "name": "Supabase-GetCliente",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -780,
+        1120
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TsWokcJaiFC3LhOR",
+          "name": "Supabase-SASRIFA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Loop\nCria o cliente e volta no laço para verificar se i cliente existe"
+      },
+      "id": "588495bf-cbcb-47da-9293-29a67d76b735",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1660,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://dify.semcodigo.edu.pl/v1/chat-messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer  {{ $('Supabase - GetEmpresa').item.json.chaveDify }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $('Campos iniciais').item.json.mensagem }}"
+            },
+            {
+              "name": "response_mode",
+              "value": "streaming"
+            },
+            {
+              "name": "conversation_id"
+            },
+            {
+              "name": "user",
+              "value": "={{ $('Campos iniciais').item.json.telefonecliente }}"
+            },
+            {
+              "name": "inputs"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "24efd8c8-e5ee-4579-9f0e-c8b9aa04f91f",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "ia_clientes",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "nome_cliente",
+              "fieldValue": "={{ $('Campos iniciais').item.json.nome_cliente }}"
+            },
+            {
+              "fieldId": "telefone_cliente",
+              "fieldValue": "={{ $('Campos iniciais').item.json.telefonecliente }}"
+            },
+            {
+              "fieldId": "empresa_id",
+              "fieldValue": "={{ $('Supabase - GetEmpresa').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "id": "b5577a32-e8e5-4afa-bbb0-f69b809d02d6",
+      "name": "Add Cliente",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        1140
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TsWokcJaiFC3LhOR",
+          "name": "Supabase-SASRIFA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "8f20a631-21b5-4fc0-bbe0-75eba7a1a5ce",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "b58de952-4512-42e6-9574-75652a9e8b8a",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "c2cf54d4-0152-4640-b24a-f025c3b7169a",
+      "name": "If Client Exist",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -580,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "8f381f07-695d-4600-b0c5-daf662cd3307",
+              "leftValue": "={{ $json.conversa_id_dify }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "772d70ba-4c23-4ad0-a7a5-ed68ae4bdfc2",
+      "name": "If Chat ID Exist",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a44c52c-21ec-4b68-8e93-c56fe65b29d2",
+              "name": "resposta",
+              "value": "={{ $('Code').item.json.thoughtEvents[0].thought }}",
+              "type": "string"
+            },
+            {
+              "id": "316960e4-fdb0-4150-a66a-e1c84f15d5ed",
+              "name": "conversa_id",
+              "value": "={{ $('Webhook').item.json.body.data.key.remoteJid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0f26fd00-54bb-41e5-a21d-7420dc8a8e45",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        660,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "4aeb6587-9377-4b1d-84ab-99e06a9287cf",
+              "leftValue": "={{ $('Webhook').item.json.body.event }}",
+              "rightValue": "messages.upsert",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "93f4ec69-af8d-4ee4-a242-e03e36d6c3ce",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1380,
+        1260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "9ec52f0b-010c-4b5f-a4b3-0a5c8c3d915a",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        1480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.semcodigo.edu.pl/message/sendText/{{ $('Supabase - GetEmpresa').item.json.id_nodewhats }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Supabase - GetEmpresa').item.json.token_nodewhats }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.conversa_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.resposta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ad43ec53-59da-468b-a46c-4c32393d3be4",
+      "name": "HTTP Request4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        500
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.semcodigo.edu.pl/message/sendText/{{ $('Supabase - GetEmpresa').item.json.id_nodewhats }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Supabase - GetEmpresa').item.json.token_nodewhats }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.conversa_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.resposta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "28f7dc00-518d-4b0c-9794-1a9bd9c19a40",
+      "name": "HTTP Request5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        1080
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"input_text\": \"{{ $json.resposta.replace(/\\\\/g, '\\\\\\\\')\n              .replace(/\"/g, '\\\\\"')\n              .replace(/\\n/g, '\\\\n')\n              .replace(/\\r/g, '\\\\r')\n              .replace(/\\t/g, '\\\\t') }}\",\n  \"voice\": \"alloy\"\n}",
+        "options": {}
+      },
+      "id": "d9ebcf51-8aac-414e-a80e-f6edc3d5b682",
+      "name": "Set input text and TTS voice",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        980,
+        620
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/audio/speech",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "tts-1"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.input_text }}"
+            },
+            {
+              "name": "voice",
+              "value": "={{ $json.voice }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "684ff2ae-b5c5-464a-80cf-9cb464c7d3b7",
+      "name": "Send HTTP Request to OpenAI's TTS Endpoint",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1300,
+        620
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "openAiApi": {
+          "id": "LlI5zfpzgSRSpmUX",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Acessa o JSON diretamente de items[0]\nconst jsonData = items[0].json.data;\n\n// Divide o texto recebido por linhas\nconst lines = jsonData.split('\\n');\n\n// Filtra e processa as linhas que contêm os eventos do tipo \"agent_thought\"\nconst thoughtEvents = lines\n  .filter(line => line.trim().startsWith('data:')) // Filtra linhas que começam com 'data:'\n  .map(line => {\n    const eventData = line.replace('data: ', ''); // Remove o prefixo 'data: '\n    try {\n      const parsedEvent = JSON.parse(eventData); // Tenta fazer o parse do JSON\n      // Retorna o evento completo se o evento for do tipo \"agent_thought\" e o campo thought não estiver vazio\n      if (parsedEvent.event === 'agent_thought' && parsedEvent.thought) {\n        return parsedEvent; // Retorna o evento completo\n      }\n      return null; // Retorna null se não for o tipo esperado ou se thought for vazio\n    } catch (error) {\n      console.error('Erro ao parsear o evento:', error); // Log de erro para facilitar a depuração\n      return null; // Retorna null caso haja erro de parse\n    }\n  })\n  .filter(event => event !== null); // Remove eventos inválidos (nulos)\n\n// Retorna um objeto com os eventos \"agent_thought\" que contêm conteúdo no campo \"thought\"\nreturn [\n  {\n    json: {\n      thoughtEvents: thoughtEvents // Retorna apenas eventos com conteúdo de thought\n    }\n  }\n];"
+      },
+      "id": "25fb3f7a-59c7-4805-8307-726cb1c228db",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "ia_clientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Supabase-GetCliente').item.json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "conversa_id_dify",
+              "fieldValue": "={{ JSON.parse($('HTTP Request1').item.json.data.split('\\n')[0].replace('data: ', '')).conversation_id }}"
+            }
+          ]
+        }
+      },
+      "id": "a693d7a6-664d-4a81-bad4-fdc008f46ab6",
+      "name": "Supabase Update Row",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        440,
+        1080
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "TsWokcJaiFC3LhOR",
+          "name": "Supabase-SASRIFA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Acessa o JSON diretamente de items[0]\nconst jsonData = items[0].json.data;\n\n// Divide o texto recebido por linhas\nconst lines = jsonData.split('\\n');\n\n// Filtra e processa as linhas que contêm os eventos do tipo \"agent_thought\"\nconst thoughtEvents = lines\n  .filter(line => line.trim().startsWith('data:')) // Filtra linhas que começam com 'data:'\n  .map(line => {\n    const eventData = line.replace('data: ', ''); // Remove o prefixo 'data: '\n    try {\n      const parsedEvent = JSON.parse(eventData); // Tenta fazer o parse do JSON\n      // Retorna o evento completo se o evento for do tipo \"agent_thought\" e o campo thought não estiver vazio\n      if (parsedEvent.event === 'agent_thought' && parsedEvent.thought) {\n        return parsedEvent; // Retorna o evento completo\n      }\n      return null; // Retorna null se não for o tipo esperado ou se thought for vazio\n    } catch (error) {\n      console.error('Erro ao parsear o evento:', error); // Log de erro para facilitar a depuração\n      return null; // Retorna null caso haja erro de parse\n    }\n  })\n  .filter(event => event !== null); // Remove eventos inválidos (nulos)\n\n// Retorna um objeto com os eventos \"agent_thought\" que contêm conteúdo no campo \"thought\"\nreturn [\n  {\n    json: {\n      thoughtEvents: thoughtEvents // Retorna apenas eventos com conteúdo de thought\n    }\n  }\n];"
+      },
+      "id": "f779a8af-9ac1-4b75-9ac6-e2cf11511cb8",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "evolution",
+        "options": {}
+      },
+      "id": "0d19ea56-96ae-4759-965f-232bb20a4fc3",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1860,
+        1260
+      ],
+      "webhookId": "ae7458dc-cad6-4e95-9586-020d6d0e550a"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Campos iniciais": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - GetEmpresa": {
+      "main": [
+        [
+          {
+            "node": "Supabase-GetCliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase-GetCliente": {
+      "main": [
+        [
+          {
+            "node": "If Client Exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Cliente": {
+      "main": [
+        [
+          {
+            "node": "Supabase-GetCliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Client Exist": {
+      "main": [
+        [
+          {
+            "node": "If Chat ID Exist",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Chat ID Exist": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Supabase - GetEmpresa",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set input text and TTS voice": {
+      "main": [
+        [
+          {
+            "node": "Send HTTP Request to OpenAI's TTS Endpoint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Supabase Update Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Update Row": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Campos iniciais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "56a130dd-fc48-44d1-8035-a4c8ed6b5822",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "104fa4ab765f555631c3321e09b2a1945e11c8740eb6b135c9675bb4c6fc3033"
+  },
+  "id": "BV18uzWrxBfLNO1p",
+  "tags": []
+}

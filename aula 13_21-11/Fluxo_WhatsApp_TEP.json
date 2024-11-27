@@ -1,0 +1,817 @@
+{
+  "name": "Fluxo-WhatsApp-TEP",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "07d7d4ca-a764-46a3-99bd-12bde2cbeda4",
+              "name": "telefonecliente",
+              "value": "={{ $json.body.data.key.remoteJid.split(\"@\")[0]}}",
+              "type": "string"
+            },
+            {
+              "id": "8029fd48-45f0-45e1-bdbb-4b5e5c15e6ba",
+              "name": "telefoneempresa",
+              "value": "={{ $json.body.sender.split(\"@\")[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "8887afeb-e789-4d2c-bd48-f996e976ba91",
+              "name": "mensagem",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "9e5180c6-5700-4ec0-91f5-57b0e7f2c13a",
+              "name": "nome_cliente",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3ba3cb9c-36be-49b3-ab73-363a0f34e3dc",
+      "name": "Campos iniciais",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        -2080,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://dify.semcodigo.edu.pl/v1/chat-messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer  {{ $('Supabase - GetEmpresa').item.json.chaveDify }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $('Campos iniciais').item.json.mensagem }}"
+            },
+            {
+              "name": "response_mode",
+              "value": "blocking"
+            },
+            {
+              "name": "conversation_id",
+              "value": "={{ $('Supabase-GetCliente').item.json.conversa_id_dify }}"
+            },
+            {
+              "name": "user",
+              "value": "={{ $('Campos iniciais').item.json.telefonecliente }}"
+            },
+            {
+              "name": "inputs"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f05e878d-7133-4372-89c4-521d51bd7a0d",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -480,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a44c52c-21ec-4b68-8e93-c56fe65b29d2",
+              "name": "resposta",
+              "value": "={{ $json.answer }}",
+              "type": "string"
+            },
+            {
+              "id": "316960e4-fdb0-4150-a66a-e1c84f15d5ed",
+              "name": "conversa_id",
+              "value": "={{ $json.conversation_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "882a3fbe-57b8-4e9f-87bf-74286b781d0d",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        -260,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "ia_empresas",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telefone",
+              "keyValue": "={{ $json.telefoneempresa }}"
+            }
+          ]
+        }
+      },
+      "id": "ce0ffd36-326a-4bde-8da4-30f22bf89545",
+      "name": "Supabase - GetEmpresa",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1520,
+        660
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TsWokcJaiFC3LhOR",
+          "name": "Supabase-SASRIFA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "ia_clientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telefone_cliente",
+              "keyValue": "={{ $('Campos iniciais').item.json.telefonecliente }}"
+            }
+          ]
+        }
+      },
+      "id": "4d4dd4d0-d4c5-41c0-a4e7-4f6503e08393",
+      "name": "Supabase-GetCliente",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        660
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TsWokcJaiFC3LhOR",
+          "name": "Supabase-SASRIFA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Loop\nCria o cliente e volta no laço para verificar se i cliente existe",
+        "height": 360,
+        "width": 960
+      },
+      "id": "7eab8e41-0091-43ef-9269-551b1bcf3733",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1320,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://dify.semcodigo.edu.pl/v1/chat-messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer  {{ $('Supabase - GetEmpresa').item.json.chaveDify }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $('Campos iniciais').item.json.mensagem }}"
+            },
+            {
+              "name": "response_mode",
+              "value": "blocking"
+            },
+            {
+              "name": "conversation_id"
+            },
+            {
+              "name": "user",
+              "value": "={{ $('Campos iniciais').item.json.telefonecliente }}"
+            },
+            {
+              "name": "inputs"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8bfcc029-fc0a-4c05-95a4-da5fbfbe0efd",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -460,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "ia_clientes",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "nome_cliente",
+              "fieldValue": "={{ $('Campos iniciais').item.json.nome_cliente }}"
+            },
+            {
+              "fieldId": "telefone_cliente",
+              "fieldValue": "={{ $('Campos iniciais').item.json.telefonecliente }}"
+            },
+            {
+              "fieldId": "empresa_id",
+              "fieldValue": "={{ $('Supabase - GetEmpresa').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "id": "a5dca581-7972-4ac8-b63c-497c05ea0247",
+      "name": "Add Cliente",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        680
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TsWokcJaiFC3LhOR",
+          "name": "Supabase-SASRIFA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "8f20a631-21b5-4fc0-bbe0-75eba7a1a5ce",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "b58de952-4512-42e6-9574-75652a9e8b8a",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "5e074815-cf62-4e12-801d-75fd87da5683",
+      "name": "If Client Exist",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1040,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "8f381f07-695d-4600-b0c5-daf662cd3307",
+              "leftValue": "={{ $json.conversa_id_dify }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ca61472a-5084-42a0-b396-92026ce9faf8",
+      "name": "If Chat ID Exist",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -780,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "ia_clientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Supabase-GetCliente').item.json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "conversa_id_dify",
+              "fieldValue": "={{ $json.conversation_id }}"
+            }
+          ]
+        }
+      },
+      "id": "16721061-005a-44eb-a0c4-81f3c4facb37",
+      "name": "Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        500
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "TsWokcJaiFC3LhOR",
+          "name": "Supabase-SASRIFA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a44c52c-21ec-4b68-8e93-c56fe65b29d2",
+              "name": "resposta",
+              "value": "={{ $('HTTP Request1').item.json.answer }}",
+              "type": "string"
+            },
+            {
+              "id": "316960e4-fdb0-4150-a66a-e1c84f15d5ed",
+              "name": "conversa_id",
+              "value": "={{ $('HTTP Request1').item.json.conversation_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f0090773-2a4b-4e0b-8b23-dd8777810d2e",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        20,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "4aeb6587-9377-4b1d-84ab-99e06a9287cf",
+              "leftValue": "={{ $('Webhook').item.json.body.event }}",
+              "rightValue": "messages.upsert",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a11c1965-80ce-4a85-9873-6f37066bf7b7",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1860,
+        800
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "1448d2b9-0d40-480f-8e1a-bf4acf8e4cc3",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1160,
+        1100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.semcodigo.edu.pl/message/sendText/{{ $('Supabase - GetEmpresa').item.json.id_nodewhats }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Supabase - GetEmpresa').item.json.token_nodewhats }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $('Webhook').item.json.body.data.key.remoteJid }}\",\n  \"text\":\"{{ JSON.stringify( $json.resposta).replace(/\"/g, '').replace(/\\n/g, '\\n') }}\"\n} ",
+        "options": {}
+      },
+      "id": "6267a782-3ee3-4628-b4fe-0144bc87cf27",
+      "name": "HTTP Request4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.semcodigo.edu.pl/message/sendText/{{ $('Supabase - GetEmpresa').item.json.id_nodewhats }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Supabase - GetEmpresa').item.json.token_nodewhats }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $('Webhook').item.json.body.data.key.remoteJid }}\",\n  \"text\":\"{{ JSON.stringify( $json.resposta).replace(/\"/g, '').replace(/\\n/g, '\\n') }}\"\n}",
+        "options": {}
+      },
+      "id": "dbb4c5a2-777b-495f-b092-fb837ab92d93",
+      "name": "HTTP Request5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        500
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"input_text\": \"{{ $json.resposta.replace(/\\\\/g, '\\\\\\\\')\n              .replace(/\"/g, '\\\\\"')\n              .replace(/\\n/g, '\\\\n')\n              .replace(/\\r/g, '\\\\r')\n              .replace(/\\t/g, '\\\\t') }}\",\n  \"voice\": \"alloy\"\n}",
+        "options": {}
+      },
+      "id": "00e7ba8b-5cab-4961-9526-b45bb4188dc2",
+      "name": "Set input text and TTS voice",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        520,
+        160
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/audio/speech",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "tts-1"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.input_text }}"
+            },
+            {
+              "name": "voice",
+              "value": "={{ $json.voice }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "450243e1-5a1d-4dba-904b-fc97a6f7887c",
+      "name": "Send HTTP Request to OpenAI's TTS Endpoint",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        840,
+        160
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "openAiApi": {
+          "id": "LlI5zfpzgSRSpmUX",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tep24",
+        "options": {}
+      },
+      "id": "0a48530e-4431-42be-a390-de986b60ddb9",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -2320,
+        800
+      ],
+      "webhookId": "af07dc66-a9e4-4557-b0be-051b52377b5f"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1200,
+        60
+      ],
+      "id": "f638ec58-1a16-4b98-8fc1-a00bbfb04995",
+      "name": "When chat message received",
+      "webhookId": "8908e8b9-799f-44c1-bb83-7160ede6f2a7"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Campos iniciais": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - GetEmpresa": {
+      "main": [
+        [
+          {
+            "node": "Supabase-GetCliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase-GetCliente": {
+      "main": [
+        [
+          {
+            "node": "If Client Exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Cliente": {
+      "main": [
+        [
+          {
+            "node": "Supabase-GetCliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Client Exist": {
+      "main": [
+        [
+          {
+            "node": "If Chat ID Exist",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Chat ID Exist": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Supabase - GetEmpresa",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set input text and TTS voice": {
+      "main": [
+        [
+          {
+            "node": "Send HTTP Request to OpenAI's TTS Endpoint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Campos iniciais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0cc76db6-cb45-4065-8b98-c651c1716a86",
+  "meta": {
+    "instanceId": "104fa4ab765f555631c3321e09b2a1945e11c8740eb6b135c9675bb4c6fc3033"
+  },
+  "id": "hvI9t3NjghWsDlbG",
+  "tags": []
+}
